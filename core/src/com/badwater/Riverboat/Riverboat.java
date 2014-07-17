@@ -14,6 +14,7 @@ public class Riverboat extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
+		System.out.println("Testing to see if changes get pushed by git");
 	}
 
 	@Override
