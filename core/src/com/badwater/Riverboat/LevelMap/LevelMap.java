@@ -31,7 +31,8 @@ public class LevelMap {
 		int straightCount = 0;
 		int sameSizeCount = 0;
 		int xMod = 2;
-		for (int y = 0 - 1; y <= terrain.getHeight() - 1; y++){
+		
+		for (int y = 0; y <= terrain.getHeight() - 1; y++){
 			if( sameSizeCount > 5){
 				float chance = .45f;
 				float rn = random.nextFloat();
