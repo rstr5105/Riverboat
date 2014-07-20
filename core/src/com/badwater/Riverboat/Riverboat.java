@@ -37,7 +37,7 @@ public class Riverboat extends Game implements GestureListener {
 		w = Gdx.graphics.getWidth();
 		
 		camera = new OrthographicCamera();
-		camera.setToOrtho(true, w, h);
+		camera.setToOrtho(false, w, h);
 		TiledMap level = new LevelMap().getMap();
 		font = new BitmapFont();
 		renderer = new OrthogonalTiledMapRenderer(level);

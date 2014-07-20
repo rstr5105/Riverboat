@@ -25,7 +25,7 @@ public class LevelMap {
 
 		atlas = new TextureAtlas("images/tiles/Tiles.pack");
 
-		TiledMapTileLayer terrain = new TiledMapTileLayer(32, 128 , 64, 64);
+		TiledMapTileLayer terrain = new TiledMapTileLayer(32, 256, 64, 64);
 		// get the center of the terrain map layer
 		int centerX = terrain.getWidth() / 2;
 		// initially set the center of the river to the center of the map layer.
@@ -37,7 +37,7 @@ public class LevelMap {
 		int sameSizeCount = 0;
 		// I don't remember why I initialized this to two, but I assume that at
 		// 3:00 this morning, I had a reason.
-		int xMod = 2;
+		int xMod = 1;
 
 		// start placing tiles into the world map, origin is bottom left, which
 		// is fucking ridiculous if you ask me.
@@ -50,63 +50,53 @@ public class LevelMap {
 			// if we do change size, we reset sameSizeCount to 0 so that we can
 			// start counting again.
 			// this episode brought to you by the letter High.
-			if (sameSizeCount > 5 && Helpers.coinFlip(.45f)) {
-				// okay, we randomly decided to change size. Next
-				// we decide how much random size to add to the width of the
-				// river.
-				// PLEASE make sure that our first variable here is always divisiable by two,
-				// as we're adding this to both sides of riverCenterX and
-				// we want an odd number of tiles to make up our river.
-				xMod = Helpers.getRandomRange(6, 2);
-				// reset sameSizeCount so that way we're able to start
-				// counting again from scratch.
-				sameSizeCount = 0;
-			}
-			else {
-				// if we didn't change size, increment sameSizeCount,
-				// so we know how long we've been the same size.
-				sameSizeCount++;
-			}
-		
-			// whiskey tango foxtrot....oscar?
-			// okay, first, we're checking to see if we have a) gone more than
-			// three tiles at the same center point,
-			// and b) if our centerPoint is the center of the river.
-			if (straightCount > 3 && riverCenterX == centerX) {
-				//Flip a coin to see if we shift left or right.
-				// If our flip was sucessful, we want to move the center of the river either left or right by one tile.
+			if (straightCount > 3) {
 				if (Helpers.coinFlip(.45f)) {
-					// this random will return -1, 0, or 1.
-					int rand = Helpers.getRandomRange(1, -1);
-					// okay, now add rand to the center of the river. 
-					// If its +1 we shift right, if it's 0 we stay, and if it's -1 we move left.
-					riverCenterX = rand + riverCenterX;
-					// same as before, reset straightCount so that way we can
-					// start counting again.
+					if ((riverCenterX <= centerX + 3)
+							&& (riverCenterX >= centerX - 3)) {
+						// okay, now add rand to the center of the river.
+						// If its +1 we shift right, if it's 0 we stay, and if
+						// it's -1 we move left.
+						int rand = Helpers.getRandomRange(1, -1);
+						riverCenterX = rand + riverCenterX;
+					}
+					else if (riverCenterX <= centerX - 5) {
+						riverCenterX++;
+					}
+					else if (riverCenterX >= centerX + 5) {
+						riverCenterX--;
+					}
 					straightCount = 0;
 				}
-			} 
-			else if (straightCount == 3 && riverCenterX != centerX) {
-				// just move the thing back to the center...that's all plebes
-				riverCenterX = centerX;
-				// and now reset our counter, again.
-				straightCount = 0;
-			} 
+				if (sameSizeCount > 5) {
+					if (Helpers.coinFlip(.45f)) {
+						xMod = Helpers.getRandomRange(2, 1);
+						sameSizeCount = 0;
+						straightCount --;
+					}	
+				}
+				else {
+					sameSizeCount++;
+				}
+			}
 			else {
 				straightCount++;
 			}
 			for (int x = 0; x < terrain.getWidth(); x++) {
 				Cell cell = new Cell();
-				if(x < riverCenterX - xMod - 1 || x > riverCenterX + xMod + 1){ 
-					//dynamic generation 
-				} 
-				//if we're a shore, make us a fucking shore already!
-				else if(x == riverCenterX - xMod -1 || x == riverCenterX + xMod + 1){ 
-						cell.setTile(new StaticTiledMapTile(atlas.findRegion("sand"))); 
-				} 
-				//this is the river, so we need to make it rivery-like
-				else{
-					cell.setTile(new StaticTiledMapTile(atlas.findRegion("water"))); 
+				if (x < riverCenterX - xMod - 1 || x > riverCenterX + xMod + 1) {
+					// dynamic generation
+				}
+				// if we're a shore, make us a fucking shore already!
+				else if (x == riverCenterX - xMod - 1
+						|| x == riverCenterX + xMod + 1) {
+					cell.setTile(new StaticTiledMapTile(atlas
+							.findRegion("sand")));
+				}
+				// this is the river, so we need to make it rivery-like
+				else {
+					cell.setTile(new StaticTiledMapTile(atlas
+							.findRegion("water")));
 				}
 				terrain.setCell(x, y, cell);
 			}
