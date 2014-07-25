@@ -20,7 +20,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badwater.Riverboat.Level.Level;
-import com.badwater.Riverboat.LevelMap.LevelMap;
 
 public class Riverboat extends Game implements GestureListener {
 	SpriteBatch batch;
