@@ -15,71 +15,60 @@ public class NodeManager {
 	private ArrayList<Node> pickNodes(int sizeW, int sizeH) {
 
 		ArrayList<Node> nodeList = new ArrayList<Node>();
-		for (int i = 0; i < 25; i++) {
-			Node node = new Node(new Coord(Helpers.getRandomRange(sizeW, 0), Helpers
-					.getRandomRange(sizeH, 0)));
+		for (int i = 0; i < 5; i++) {
+			Node node = new Node(new Coord(Helpers.getRandomRange(sizeW, 0),
+					Helpers.getRandomRange(sizeH, 0)));
 			nodeList.add(node);
 		}
 		return nodeList;
 	}
 
-	public ArrayList<Node> createPath(Coord start, Coord end, int sizeW,
+	public ArrayList<Coord> createPath(Node start, Node end, int sizeW,
 			int sizeH) {
 		ArrayList<Node> Nodes = pickNodes(sizeW, sizeH);
 		ArrayList<Node> sortedNodes = new ArrayList<Node>();
-		ArrayList<Node> path = new ArrayList<Node>();
+		ArrayList<Coord> path = new ArrayList<Coord>();
+		Node startN = (Node) start;
+		while(!Nodes.isEmpty()){
+			sortedNodes.add(startN);
+			int distanceLast = Integer.MAX_VALUE - 1;
+			Node tmp = new Node();
+			for(Node n : Nodes){
+				int distance = measureNodes(startN, n);
+				System.out.println(distance);
+				if (distance < distanceLast){
+					distanceLast = distance;
+					startN = n;
+				}
+			}
+			Nodes.remove(startN);
 		
-		for(Node current : Nodes){
-			Node shortestNode;
-			double distance = (double) Integer.MAX_VALUE;
-			if(!current.hasNext()){
-				for(Node next : Nodes){
-					if (current.equals(next)){
-						boolean blah = current.equals(next);
-						//same node, ignore.
-							break;
-					}
-					else{
-						double d2 = measureNodes(current, next);
-						if (d2 < distance){
-							distance = d2;
-							shortestNode = next;
-							current.setNext(shortestNode);
-						}
+		}
+		System.out.println(sortedNodes.size());
+		
+		for(Node n : sortedNodes){
+			for(Node n1 : sortedNodes){
+				int xMod = Integer.signum(n1.getX() - n.getX());
+				int yMod = Integer.signum(n1.getY() - n.getY());
+				
+				int length = (int) measureNodes(n, n1);
+				
+				for (int i = 0; i < length; i++){
+					Coord c = new Coord(n.getX() + xMod * i, n.getY() + yMod * i);
+					if (!path.contains(c)){
+						path.add(c);
 					}
 				}
 			}
-			else if(current.hasNext()){
-				for (Node next : Nodes){
-					if(next.equals(current.getNext())){
-						//same node, ignore.
-						break;
-					}
-					else{
-						double d2 = measureNodes(current.getNext(), next);
-						if (d2 < distance){
-							distance = d2;
-							shortestNode = next;
-							current.getNext().setNext(shortestNode);
-							
-						}
-					}
-				}
-			sortedNodes.add(current);
-			}
 		}
-		for (Node n : sortedNodes){
-			if(n.hasNext()){
-				System.out.println("X: " + n.getX() + " Y: " + n.getY() 
-						+  "\nNext X: " + n.getNext().getX() + "NextY: " + n.getNext().getY()
-						+ "Distance: " + measureNodes(n, n.getNext()));
-			}
+		for(Coord c : path){
+			System.out.println(c.getX() + " : " + c.getY() );
 		}
-		return null;
+		return path;
 	}
 
-	private double measureNodes(Node start, Node end) {
-		double distance = 0;
+	private int measureNodes(Node start, Node end) {
+		int distance = 0;
 
 		int x1 = start.getX();
 		int x2 = end.getX();

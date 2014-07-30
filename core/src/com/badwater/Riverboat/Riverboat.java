@@ -52,8 +52,7 @@ public class Riverboat extends Game implements GestureListener {
 		sprite.setOrigin(0, 0);
 		sprite.setPosition(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
 		
-		System.out.println(Gdx.graphics.getWidth());
-		System.out.println(Gdx.graphics.getHeight());
+	
 		Gdx.input.setInputProcessor(new GestureDetector(this));
 		
 	}
@@ -67,6 +66,7 @@ public class Riverboat extends Game implements GestureListener {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
+		if ()
 		renderer.setView(camera);
 		renderer.render();
 	}

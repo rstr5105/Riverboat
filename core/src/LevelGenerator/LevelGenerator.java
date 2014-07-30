@@ -24,6 +24,7 @@ public class LevelGenerator {
 	private static final int SIZE_W = 100; // Horizontal size in tiles;
 
 	private TextureAtlas atlas = new TextureAtlas("images/tiles/Tiles.pack");
+	private Cell water = new Cell();
 	private Level level;
 	private Coord genCenter = new Coord(0, 0);
 
@@ -32,6 +33,8 @@ public class LevelGenerator {
 	
 
 	public LevelGenerator() {
+
+		water.setTile(new StaticTiledMapTile(atlas.findRegion("water")));
 		level = new Level();
 		genCenter.setX(SIZE_W / 2);
 		createRiverAndTerrainLayer();
@@ -41,20 +44,23 @@ public class LevelGenerator {
 		// draw our starting point
 		int radius = 3;
 		nodeManager = new NodeManager();
-		Coord start = new Coord(Helpers.getRandomRange(SIZE_W, 0) , 0);
-		Coord end = new Coord(Helpers.getRandomRange(SIZE_W, 0), SIZE_H);
+		Node start = new Node(new Coord(Helpers.getRandomRange(SIZE_W, 0) , 0));
+		Node end = new Node(new Coord(Helpers.getRandomRange(SIZE_W, 0), SIZE_H));
 		
-		drawRiverAtPoint(genCenter, radius);
-		ArrayList<Node> path = nodeManager.createPath(start, end, SIZE_W, SIZE_H);
+		drawRiverAtPoint(genCenter, radius, water);
+		ArrayList<Coord> path = nodeManager.createPath(start, end, SIZE_W, SIZE_H);
+		System.out.println(path.size());
 		drawRiver(path);
 		drawShores();
 	}
 
 
-	private void drawRiver(ArrayList<Node> path) {
+	private void drawRiver(ArrayList<Coord> path) {
 		// draw a river in a mostly up direction!
-		for (Node c: path){
-			drawRiverAtPoint(c, 3);
+		while(!path.isEmpty()){
+			Coord c = path.get(0);
+			drawRiverAtPoint(c, 1, water);
+			path.remove(0);
 		}
 	}
 
@@ -118,10 +124,7 @@ public class LevelGenerator {
 		c.setX(c.getX() - 1);
 	}
 
-	private void drawRiverAtPoint(Coord genCenter, int radius) {
-
-		Cell cell = new Cell();
-		cell.setTile(new StaticTiledMapTile(atlas.findRegion("water")));
+	private void drawRiverAtPoint(Coord genCenter, int radius, Cell cell) {
 		int r2 = radius * radius;
 		while (r2 >= 0) {
 			riverLayer.setCell(genCenter.getX(), genCenter.getY() + radius,
