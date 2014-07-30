@@ -1,60 +1,85 @@
 package com.badwater.Riverboat.CoordsAndNodes;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.List;
 
-import com.badwater.Riverboat.CoordsAndNodes.Node.nodeType;
 import com.badwater.Riverboat.Helpers.Helpers;
 
 public class NodeManager {
-
-	private ArrayList<Node> nodeList = new ArrayList<Node>();
 
 	public NodeManager() {
 
 		// TODO Auto-generated constructor stub
 	}
 
-	private ArrayList<Coord> pickNodes(int sizeW, int sizeH) {
-		// pick new node that moves closer to the end node in either direction.
-		// int totalDistance, int distance2, int mod = Integer.signum(distance2
-		// - distance1);
-		ArrayList<Coord> coordList = new ArrayList<Coord>();
-		for (int i = 0; i < 25; i++){
-			coordList.add(new Coord(Helpers.getRandomRange(sizeW, 0), Helpers.getRandomRange(sizeH, 0)));
+	private ArrayList<Node> pickNodes(int sizeW, int sizeH) {
+
+		ArrayList<Node> nodeList = new ArrayList<Node>();
+		for (int i = 0; i < 25; i++) {
+			Node node = new Node(new Coord(Helpers.getRandomRange(sizeW, 0), Helpers
+					.getRandomRange(sizeH, 0)));
+			nodeList.add(node);
 		}
-		return coordList;
+		return nodeList;
 	}
 
-	public ArrayList<Coord> createPath(Coord start, Coord end, int sizeW, int sizeH) {
-		ArrayList<Coord> Nodes = pickNodes(sizeW, sizeH);
-		ArrayList<Coord> path = new ArrayList<Coord>();
-		Nodes.add(0, start);
-		Nodes.add(end);
-		for(Coord c1 : Nodes){
-			for(Coord c2 : Nodes){
-				if(c1.getX() == c2.getX() && c1.getY() == c2.getY()){
-					//same node. ignore.
-					break;
+	public ArrayList<Node> createPath(Coord start, Coord end, int sizeW,
+			int sizeH) {
+		ArrayList<Node> Nodes = pickNodes(sizeW, sizeH);
+		ArrayList<Node> sortedNodes = new ArrayList<Node>();
+		ArrayList<Node> path = new ArrayList<Node>();
+		
+		for(Node current : Nodes){
+			Node shortestNode;
+			double distance = (double) Integer.MAX_VALUE;
+			if(!current.hasNext()){
+				for(Node next : Nodes){
+					if (current.equals(next)){
+						boolean blah = current.equals(next);
+						//same node, ignore.
+							break;
+					}
+					else{
+						double d2 = measureNodes(current, next);
+						if (d2 < distance){
+							distance = d2;
+							shortestNode = next;
+							current.setNext(shortestNode);
+						}
+					}
 				}
-				else{
-					
-				}
-				
 			}
-			
+			else if(current.hasNext()){
+				for (Node next : Nodes){
+					if(next.equals(current.getNext())){
+						//same node, ignore.
+						break;
+					}
+					else{
+						double d2 = measureNodes(current.getNext(), next);
+						if (d2 < distance){
+							distance = d2;
+							shortestNode = next;
+							current.getNext().setNext(shortestNode);
+							
+						}
+					}
+				}
+			sortedNodes.add(current);
+			}
 		}
-		path.add(end);	
-		for (Coord c : path){
-			System.out.println("X: " + c.getX() +"\nY: " + c.getY());
+		for (Node n : sortedNodes){
+			if(n.hasNext()){
+				System.out.println("X: " + n.getX() + " Y: " + n.getY() 
+						+  "\nNext X: " + n.getNext().getX() + "NextY: " + n.getNext().getY()
+						+ "Distance: " + measureNodes(n, n.getNext()));
+			}
 		}
-		return path;
+		return null;
 	}
 
-	private int measureNodes(Coord start, Coord end) {
-		int distance = 0;
+	private double measureNodes(Node start, Node end) {
+		double distance = 0;
 
 		int x1 = start.getX();
 		int x2 = end.getX();
@@ -63,7 +88,6 @@ public class NodeManager {
 
 		int a = x2 - x1;
 		int b = y2 - y1;
-
 
 		distance = (int) Math.sqrt((a * a) + (b * b));
 		return distance;

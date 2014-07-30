@@ -45,15 +45,15 @@ public class LevelGenerator {
 		Coord end = new Coord(Helpers.getRandomRange(SIZE_W, 0), SIZE_H);
 		
 		drawRiverAtPoint(genCenter, radius);
-		ArrayList<Coord> path = nodeManager.createPath(start, end, SIZE_W, SIZE_H);
+		ArrayList<Node> path = nodeManager.createPath(start, end, SIZE_W, SIZE_H);
 		drawRiver(path);
 		drawShores();
 	}
 
 
-	private void drawRiver(ArrayList<Coord> path) {
+	private void drawRiver(ArrayList<Node> path) {
 		// draw a river in a mostly up direction!
-		for (Coord c: path){
+		for (Node c: path){
 			drawRiverAtPoint(c, 3);
 		}
 	}

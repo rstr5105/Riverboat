@@ -9,6 +9,11 @@ public class Node extends Coord {
 	}
 	
 	private nodeType nodeType;
+	private Node next;
+	
+	public Node(){
+		
+	}
 	
 	public Node(Coord c){
 			super(c.getX(), c.getY());
@@ -16,7 +21,7 @@ public class Node extends Coord {
 			// TODO Auto-generated constructor stub
 	}
 	
-	nodeType nodeType(){
+	public nodeType nodeType(){
 		
 		return this.nodeType;
 	}
@@ -25,5 +30,19 @@ public class Node extends Coord {
 		this.nodeType = nodeType;
 	}
 	
+	public void setNext(Node next){
+		this.next = next;
+	}
+	
+	public Node getNext(){
+		return next;
+	}
+	
+	public boolean hasNext(){
+		if (next != null){
+			return true;
+		}
+		else return false;
+	}
 	
 }

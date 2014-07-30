@@ -3,7 +3,6 @@ package com.badwater.Riverboat.CoordsAndNodes;
 public class Coord {
 	private int x;
 	private int y;
-	
 	public Coord(){
 	}
 	
@@ -11,6 +10,7 @@ public class Coord {
 		this.x = x;
 		this.y = y;
 	}
+	
 	public int getX(){
 		return x;
 	}
